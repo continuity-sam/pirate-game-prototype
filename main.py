@@ -22,9 +22,16 @@ class Game:
     def import_assets(self):
         base_dir = dirname(abspath(__file__))
         self.level_frames = {
-            'flag': import_folder(base_dir, 'data', 'graphics', 'level', 'flag')
+            'flag': import_folder(base_dir, 'data', 'graphics', 'level', 'flag'),
+            'saw': import_folder(base_dir, 'data', 'graphics', 'enemies', 'saw', 'animation'),
+            'floor_spike': import_folder(base_dir, 'data', 'graphics', 'enemies', 'floor_spikes'),
+            'palms': import_sub_folders(base_dir, 'data', 'graphics', 'level', 'palms'),
+            'candle': import_folder(base_dir, 'data', 'graphics', 'level', 'candle'),
+            'window': import_folder(base_dir, 'data', 'graphics', 'level', 'window'),
+            'big_chain': import_folder(base_dir, 'data', 'graphics', 'level', 'big_chains'),
+            'small_chain': import_folder(base_dir, 'data', 'graphics', 'level', 'small_chains'),
+            'candle_light': import_folder(base_dir, 'data', 'graphics', 'level', 'candle light'),
         }
-        print('self.level_frame')
 
     def run(self):
         while True:
