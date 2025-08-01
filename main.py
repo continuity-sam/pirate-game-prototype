@@ -31,6 +31,15 @@ class Game:
             'big_chain': import_folder(base_dir, 'data', 'graphics', 'level', 'big_chains'),
             'small_chain': import_folder(base_dir, 'data', 'graphics', 'level', 'small_chains'),
             'candle_light': import_folder(base_dir, 'data', 'graphics', 'level', 'candle light'),
+            'player': import_sub_folders(base_dir, 'data', 'graphics', 'player'),
+            'saw': import_folder(base_dir, 'data', 'graphics', 'enemies', 'saw', 'animation'),
+            'saw_chain': import_image(base_dir, 'data', 'graphics', 'enemies', 'saw', 'saw_chain'),
+            'helicopter': import_folder(base_dir, 'data', 'graphics', 'level', 'helicopter'),
+            'boat': import_folder(base_dir, 'data', 'graphics', 'objects', 'boat'), 
+            'spike': import_image(base_dir, 'data', 'graphics', 'enemies', 'spike_ball', 'Spiked Ball'),
+            'spike_chain': import_image(base_dir, 'data', 'graphics', 'enemies', 'spike_ball', 'Spiked_Chain'),
+            'tooth': import_folder(base_dir, 'data', 'graphics', 'enemies', 'tooth', 'run'),
+
         }
 
     def run(self):
