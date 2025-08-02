@@ -39,7 +39,10 @@ class Game:
             'spike': import_image(base_dir, 'data', 'graphics', 'enemies', 'spike_ball', 'Spiked Ball'),
             'spike_chain': import_image(base_dir, 'data', 'graphics', 'enemies', 'spike_ball', 'Spiked_Chain'),
             'tooth': import_folder(base_dir, 'data', 'graphics', 'enemies', 'tooth', 'run'),
-
+            'shell': import_sub_folders(base_dir, 'data', 'graphics', 'enemies', 'shell'),
+            'pearl': import_image(base_dir, 'data', 'graphics', 'enemies', 'bullets', 'pearl'),
+            'items': import_sub_folders(base_dir, 'data', 'graphics', 'items'),
+            'particle': import_folder(base_dir, 'data', 'graphics', 'effects', 'particle'),
         }
 
     def run(self):
