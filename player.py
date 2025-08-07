@@ -4,16 +4,17 @@ from os.path import join, dirname, abspath
 from math import sin
 
 class Player(pygame.sprite.Sprite):
-	def __init__(self, pos, groups, collision_sprites, semi_collision_sprites, frames):
+	def __init__(self, pos, groups, collision_sprites, semi_collision_sprites, frames, data):
 		# general setup
 		super().__init__(groups)
 		base_dir = dirname(abspath(__file__))
 		self.z = Z_LAYERS['main']
+		self.data = data
 
 		# image
 		self.frames, self.frame_index = frames, 0
 		self.state, self.facing_right = 'idle', True
-		self.image = self.frames[self.state][self.frame_index]
+		self.image = self.frames[self.state][self.frame_index] 
 
 		#rects
 		self.rect = self.image.get_frect(topleft = pos)
@@ -190,11 +191,11 @@ class Player(pygame.sprite.Sprite):
 
 	def get_damage(self):
 		if not self.timers['hit'].active:
-			print('ooooof')
+			self.data.health -= 1
 			self.timers['hit'].activate()
 
 	def flicker(self):
-		if self.timers['hit'].active and sin(pygame.time.get_ticks()) >= 0:
+		if self.timers['hit'].active and sin(pygame.time.get_ticks() * 200) >= 0:
 			white_mask = pygame.mask.from_surface(self.image)
 			white_surf = white_mask.to_surface()
 			white_surf.set_colorkey('black')

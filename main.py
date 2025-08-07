@@ -2,8 +2,10 @@ from settings import *
 from level import Level
 from pytmx.util_pygame import load_pygame
 from os.path import join, dirname, abspath
-
 from support import *
+from data import Data
+from debug import debug
+from ui import UI
 
 class Game:
     def __init__(self):
@@ -13,11 +15,12 @@ class Game:
         self.clock = pygame.time.Clock()
         self.import_assets()
 
+        self.ui = UI(self.font, self.ui_frames)
+        self.data = Data(self.ui)
         base_dir = dirname(abspath(__file__))
         tmx_path = join(base_dir, 'data', 'levels', 'omni.tmx')   
         self.tmx_map = {0: load_pygame(tmx_path)}
-
-        self.current_stage = Level(self.tmx_map[0], self.level_frames)
+        self.current_stage = Level(self.tmx_map[0], self.level_frames, self.data)
 
     def import_assets(self):
         base_dir = dirname(abspath(__file__))
@@ -43,6 +46,17 @@ class Game:
             'pearl': import_image(base_dir, 'data', 'graphics', 'enemies', 'bullets', 'pearl'),
             'items': import_sub_folders(base_dir, 'data', 'graphics', 'items'),
             'particle': import_folder(base_dir, 'data', 'graphics', 'effects', 'particle'),
+            'water_top': import_folder(base_dir, 'data', 'graphics', 'level', 'water', 'top'),
+            'water_body': import_image(base_dir, 'data', 'graphics', 'level', 'water', 'body'),
+            'bg_tiles': import_folder_dict(base_dir, 'data', 'graphics', 'level', 'bg', 'tiles'),
+            'cloud_small': import_folder(base_dir, 'data', 'graphics', 'level', 'clouds', 'small'),
+            'cloud_large': import_folder(base_dir, 'data', 'graphics', 'level', 'clouds', 'large_cloud'),
+        } 
+
+        self.font = pygame.font.Font(join(base_dir, 'data', 'graphics', 'ui', 'runescape_uf.ttf'), 40)
+        self.ui_frames = {
+            'heart': import_folder(base_dir, 'data', 'graphics', 'ui', 'heart'),
+            'coin': import_image(base_dir, 'data', 'graphics', 'ui', 'coin')
         }
 
     def run(self):
@@ -54,6 +68,7 @@ class Game:
                     sys.exit()
 
             self.current_stage.run(dt) 
+            self.ui.update(dt)
             pygame.display.update()
 
 if __name__ == "__main__":
