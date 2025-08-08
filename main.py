@@ -50,9 +50,8 @@ class Game:
             'water_body': import_image(base_dir, 'data', 'graphics', 'level', 'water', 'body'),
             'bg_tiles': import_folder_dict(base_dir, 'data', 'graphics', 'level', 'bg', 'tiles'),
             'cloud_small': import_folder(base_dir, 'data', 'graphics', 'level', 'clouds', 'small'),
-            'cloud_large': import_folder(base_dir, 'data', 'graphics', 'level', 'clouds', 'large_cloud'),
+            'cloud_large': import_image(base_dir, 'data', 'graphics', 'level', 'clouds', 'large_cloud'),
         } 
-
         self.font = pygame.font.Font(join(base_dir, 'data', 'graphics', 'ui', 'runescape_uf.ttf'), 40)
         self.ui_frames = {
             'heart': import_folder(base_dir, 'data', 'graphics', 'ui', 'heart'),
