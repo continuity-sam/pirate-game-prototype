@@ -1,6 +1,35 @@
 from settings import *
 from sprites import Sprite, Cloud
 from random import choice, randint
+from timer import Timer
+
+class WorldSprites(pygame.sprite.Group):
+	def __init__(self, data):
+		super().__init__()
+		self.display_surface = pygame.display.get_surface()
+		self.data = data
+		self.offset = vector()
+
+	def draw(self, target_position):
+		self.offset.x = -(target_position[0] - WINDOW_WIDTH / 2)
+		self.offset.y = -(target_position[1] - WINDOW_HEIGHT / 2)
+
+		# background
+		for sprite in sorted(self, key = lambda sprite: sprite.z):
+			if sprite.z < Z_LAYERS['main']:
+				if sprite.z == Z_LAYERS['path']:
+					if sprite.level <= self.data.unlocked_level:
+						self.display_surface.blit(sprite.image, sprite.rect.topleft + self.offset)
+				else:
+					self.display_surface.blit(sprite.image, sprite.rect.topleft + self.offset)
+
+		# main
+		for sprite in sorted(self, key = lambda sprite: sprite.rect.centery):
+			if sprite.z == Z_LAYERS['main']:
+				if hasattr(sprite, 'icon'):
+					self.display_surface.blit(sprite.image, sprite.rect.topleft + self.offset + vector(0, -20))
+				else:
+					self.display_surface.blit(sprite.image, sprite.rect.topleft + self.offset)
 
 class AllSprites(pygame.sprite.Group):
 	def __init__(self, width, height, clouds, horizon_line, bg_tile = None, top_limit = 0):
@@ -24,7 +53,6 @@ class AllSprites(pygame.sprite.Group):
 					Sprite((x,y), bg_tile, self, -1)
 		else: # sky
 			self.large_cloud = clouds['large']
-			print("Self cloud: ",self.large_cloud)
 			self.small_clouds = clouds['small']
 			self.cloud_direction = -1
 
@@ -36,6 +64,8 @@ class AllSprites(pygame.sprite.Group):
 
 			# small clouds
 			# timer -> cloud every 2.5 seconds
+			self.cloud_timer = Timer(2500, self.create_cloud, True)
+			self.cloud_timer.activate()
 
 			# lots of clouds by default
 			for cloud in range(20):
@@ -68,12 +98,18 @@ class AllSprites(pygame.sprite.Group):
 			top = self.horizon_line - self.large_cloud_height + self.offset.y
 			self.display_surface.blit(self.large_cloud, (left, top))
 
+	def create_cloud(self):
+		pos = (randint(self.width + 500, self.width + 600), randint(self.borders['top'], self.horizon_line))
+		surf = choice(self.small_clouds)
+		Cloud(pos, surf, self)
+
 	def draw(self, target_position, dt):
 		self.offset.x = -(target_position[0] - WINDOW_WIDTH / 2)
 		self.offset.y = -(target_position[1] - WINDOW_HEIGHT / 2)
 		self.camera_constraint()
 
 		if self.sky:
+			self.cloud_timer.update()
 			self.draw_sky()
 			self.draw_large_cloud(dt)
 

@@ -6,6 +6,7 @@ from support import *
 from data import Data
 from debug import debug
 from ui import UI
+from overworld import Overworld
 
 class Game:
     def __init__(self):
@@ -18,13 +19,30 @@ class Game:
         self.ui = UI(self.font, self.ui_frames)
         self.data = Data(self.ui)
         base_dir = dirname(abspath(__file__))
-        tmx_path = join(base_dir, 'data', 'levels', 'omni.tmx')   
-        self.tmx_map = {0: load_pygame(tmx_path)}
-        self.current_stage = Level(self.tmx_map[0], self.level_frames, self.data)
+        self.tmx_map = {
+            0: load_pygame(join(base_dir, 'data', 'levels', '0.tmx')),
+            1: load_pygame(join(base_dir, 'data', 'levels', '1.tmx')),
+            2: load_pygame(join(base_dir, 'data', 'levels', '2.tmx')),
+            3: load_pygame(join(base_dir, 'data', 'levels', '3.tmx')),
+            4: load_pygame(join(base_dir, 'data', 'levels', '4.tmx')),
+            5: load_pygame(join(base_dir, 'data', 'levels', '5.tmx'))
+                        }
+        self.tmx_overworld = load_pygame(join(base_dir, 'data', 'overworld', 'overworld.tmx'))
+        self.current_stage = Level(self.tmx_map[self.data.current_level], self.level_frames, self.data, self.switch_stage)
+
+    def switch_stage(self, target, unlock = 0):
+        if target == 'level':
+            self.current_stage =  Level(self.tmx_map[self.data.current_level], self.level_frames, self.data, self.switch_stage)
+        else: # overworld
+            if unlock > 0:
+                self.data.unlocked_level = unlock
+            else:
+                self.data.health -= 1
+            self.current_stage = Overworld(self.tmx_overworld, self.data, self.overworld_frames, self.switch_stage)
 
     def import_assets(self):
         base_dir = dirname(abspath(__file__))
-        self.level_frames = {
+        self.level_frames = { 
             'flag': import_folder(base_dir, 'data', 'graphics', 'level', 'flag'),
             'saw': import_folder(base_dir, 'data', 'graphics', 'enemies', 'saw', 'animation'),
             'floor_spike': import_folder(base_dir, 'data', 'graphics', 'enemies', 'floor_spikes'),
@@ -56,6 +74,12 @@ class Game:
         self.ui_frames = {
             'heart': import_folder(base_dir, 'data', 'graphics', 'ui', 'heart'),
             'coin': import_image(base_dir, 'data', 'graphics', 'ui', 'coin')
+        }
+        self.overworld_frames = {
+            'palms': import_folder(base_dir, 'data', 'graphics', 'overworld', 'palm'),
+            'water': import_folder(base_dir, 'data', 'graphics', 'overworld', 'water'),
+            'path': import_folder_dict(base_dir, 'data', 'graphics', 'overworld', 'path'),
+            'icon': import_sub_folders(base_dir, 'graphics', 'overworld', 'icon'),
         }
 
     def run(self):
