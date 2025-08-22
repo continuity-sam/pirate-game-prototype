@@ -28,11 +28,12 @@ class Game:
             5: load_pygame(join(base_dir, 'data', 'levels', '5.tmx'))
                         }
         self.tmx_overworld = load_pygame(join(base_dir, 'data', 'overworld', 'overworld.tmx'))
-        self.current_stage = Level(self.tmx_map[self.data.current_level], self.level_frames, self.data, self.switch_stage)
+        self.current_stage = Level(self.tmx_map[self.data.current_level], self.level_frames, self.audio_files, self.data, self.switch_stage)
+        self.bg_music.play(-1)
 
     def switch_stage(self, target, unlock = 0):
         if target == 'level':
-            self.current_stage =  Level(self.tmx_map[self.data.current_level], self.level_frames, self.data, self.switch_stage)
+            self.current_stage =  Level(self.tmx_map[self.data.current_level], self.level_frames, self.audio_files, self.data, self.switch_stage)
         else: # overworld
             if unlock > 0:
                 self.data.unlocked_level = unlock
@@ -82,6 +83,21 @@ class Game:
             'icon': import_sub_folders(base_dir, 'graphics', 'overworld', 'icon'),
         }
 
+        self.audio_files = {
+            'coin': pygame.mixer.Sound(join(base_dir, 'audio', 'coin.wav')),
+            'attack': pygame.mixer.Sound(join(base_dir, 'audio', 'attack.wav')),
+            'jump': pygame.mixer.Sound(join(base_dir, 'audio', 'jump.wav')),
+            'damage' : pygame.mixer.Sound(join(base_dir, 'audio', 'damage.wav')),
+            'pearl': pygame.mixer.Sound(join(base_dir, 'audio', 'pearl.wav')),
+        }
+
+        self.bg_music = pygame.mixer.Sound(join(base_dir, 'audio', 'starlight_city.mp3'))
+        
+    def check_game_over(self):
+        if self.data.health <= 0:
+            pygame.quit()
+            sys.exit()
+
     def run(self):
         while True:
             dt = self.clock.tick() / 1000
@@ -90,6 +106,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
+            self.check_game_over()
             self.current_stage.run(dt) 
             self.ui.update(dt)
             pygame.display.update()
@@ -97,5 +114,3 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
-
- 
